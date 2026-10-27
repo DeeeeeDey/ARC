@@ -3,7 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A.R.C. — Art. Render. Create.</title>
+  <title>Projects & Archive — A.R.C. (Art. Render. Create.)</title>
+  <meta name="description" content="Explore the chronological archive of event visuals, branding systems, and cinematic media productions crafted by A.R.C. for IEM Kolkata events.">
+  <link rel="canonical" href="https://arc-landing-page.vercel.app/projects.html">
+  <link rel="icon" type="image/png" href="ARC%20LOGO.png">
+  <meta name="theme-color" content="#050505">
+
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arc-landing-page.vercel.app/projects.html">
+  <meta property="og:title" content="Projects & Archive — A.R.C.">
+  <meta property="og:description" content="Chronological archive of event visuals and media productions crafted by A.R.C.">
+  <meta property="og:image" content="https://arc-landing-page.vercel.app/ARC%20LOGO.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Projects & Archive — A.R.C.">
+  <meta name="twitter:description" content="Chronological archive of event visuals and media productions crafted by A.R.C.">
+  <meta name="twitter:image" content="https://arc-landing-page.vercel.app/ARC%20LOGO.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -163,36 +178,8 @@
   <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
   <script src="https://unpkg.com/framer-motion@11.11.17/dist/framer-motion.js"></script>
 
-  <!-- Security: Anti-Inspect / Anti-Copy -->
-  <script>
-    // Disable Right Click
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    
-    // Disable common developer tools and view-source shortcuts
-    document.addEventListener('keydown', event => {
-      if (
-        event.key === 'F12' || 
-        (event.ctrlKey && event.shiftKey && event.key === 'I') || 
-        (event.ctrlKey && event.shiftKey && event.key === 'J') || 
-        (event.ctrlKey && event.shiftKey && event.key === 'C') || 
-        (event.ctrlKey && event.key === 'U') ||
-        (event.metaKey && event.altKey && event.key === 'I') || // Mac
-        (event.metaKey && event.altKey && event.key === 'J') || // Mac
-        (event.metaKey && event.altKey && event.key === 'U')    // Mac
-      ) {
-        event.preventDefault();
-      }
-    });
-
-    // Aggressive DevTools trap
-    setInterval(function() {
-      (function (a) {
-        return (function (a) {
-          return (Function('Function(arguments[0]+"' + a + '")()'))
-        })(a)
-      })('bugger')('de');
-    }, 50);
-  </script>
+  <!-- Cookie Consent Banner -->
+  <script src="cookie-banner.js" defer></script>
 </head>
 <body>
   <div id="root"></div>
@@ -315,12 +302,12 @@
               <motion.span animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }} className="w-[14px] h-[1.5px] bg-white rounded-full block"></motion.span>
             </button>
 
-            <button className="bg-white text-black px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-body font-medium flex items-center gap-1 hover:bg-gray-200 transition-colors">
+            <a href="index.html" className="bg-white text-black px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-body font-medium flex items-center gap-1 hover:bg-gray-200 transition-colors">
               Join A.R.C.
               <svg width="14" height="14" className="md:w-4 md:h-4 hidden sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 17L17 7M17 7H7M17 7V17" />
               </svg>
-            </button>
+            </a>
             <div className="w-10 h-10 md:w-12 md:h-12 hidden md:block opacity-0"></div>
           </div>
 
@@ -505,11 +492,21 @@
                           className="group relative aspect-square w-full text-left liquid-glass rounded-2xl md:rounded-3xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-500 block"
                         >
                           {item.type === 'video' ? (
-                            <video 
-                              src={item.url} 
-                              autoPlay loop muted playsInline
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                            />
+                            <div className="relative w-full h-full">
+                              <video 
+                                src={item.url} 
+                                preload="metadata"
+                                muted 
+                                playsInline
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                                onMouseEnter={(e) => { e.currentTarget.play().catch(()=>{}); }}
+                                onMouseLeave={(e) => { e.currentTarget.pause(); }}
+                              />
+                              <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider text-white/90 border border-white/10 flex items-center gap-1.5 pointer-events-none">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+                                Clip
+                              </div>
+                            </div>
                           ) : (
                             <img 
                               src={item.url} 
@@ -654,6 +651,40 @@
               </div>
             </div>
           </main>
+
+          {/* FOOTER */}
+          <footer className="relative z-10 border-t border-white/10 mt-20 pt-16 pb-12 px-6 md:px-16 lg:px-20 liquid-glass">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12">
+              <div className="flex items-center gap-4">
+                <a href="index.html" className="w-12 h-12 rounded-full overflow-hidden border border-white/10 hover:border-white/30 transition-colors flex items-center justify-center liquid-glass">
+                  <img src="ARC%20LOGO.png" alt="ARC Logo" className="w-full h-full object-contain" />
+                </a>
+                <div>
+                  <h4 className="font-heading italic text-2xl text-white">A.R.C.</h4>
+                  <p className="font-body text-xs text-white/50 tracking-wider uppercase">Art. Render. Create. // IEM Kolkata</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-6 text-sm font-body text-white/70">
+                <a href="index.html" className="hover:text-white transition-colors">Home</a>
+                <a href="projects.html" className="hover:text-white transition-colors">Projects</a>
+                <a href="index.html#visuals" className="hover:text-white transition-colors">Visuals</a>
+                <a href="team.html" className="hover:text-white transition-colors">Team</a>
+                <a href="https://www.instagram.com/iemcomicverse" target="_blank" rel="noopener noreferrer" className="hover:text-[#00f0ff] transition-colors flex items-center gap-1.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/><circle cx="18" cy="6" r="1.5" fill="currentColor"/></svg>
+                  Instagram
+                </a>
+              </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-body text-white/40">
+              <p>&copy; 2026 A.R.C. — Art. Render. Create. All rights reserved.</p>
+              <div className="flex items-center gap-4">
+                <a href="privacy.html" className="hover:text-white transition-colors">Privacy Policy</a>
+                <span>•</span>
+                <a href="terms.html" className="hover:text-white transition-colors">Terms of Service</a>
+              </div>
+            </div>
+          </footer>
 
           {/* Event Detail Modal */}
           {selectedEvent && (

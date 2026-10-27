@@ -3,7 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A.R.C. — Art. Render. Create.</title>
+  <title>A.R.C. — Art. Render. Create. | IEM Creative Society</title>
+  <meta name="description" content="A.R.C. (Art. Render. Create.) is the premier creative media, visual production, and design society of IEM Kolkata — crafting event campaigns, motion graphics, and cinematic storytelling.">
+  <link rel="canonical" href="https://arc-landing-page.vercel.app/">
+  <link rel="icon" type="image/png" href="ARC%20LOGO.png">
+  <meta name="theme-color" content="#050505">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://arc-landing-page.vercel.app/">
+  <meta property="og:title" content="A.R.C. — Art. Render. Create.">
+  <meta property="og:description" content="Crafting cinematic visuals, motion graphics, branding systems, and digital experiences that shape campus culture.">
+  <meta property="og:image" content="https://arc-landing-page.vercel.app/ARC%20LOGO.png">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://arc-landing-page.vercel.app/">
+  <meta name="twitter:title" content="A.R.C. — Art. Render. Create.">
+  <meta name="twitter:description" content="The official creative media and visual production club of IEM Kolkata.">
+  <meta name="twitter:image" content="https://arc-landing-page.vercel.app/ARC%20LOGO.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -144,36 +162,8 @@
   <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
   <script src="https://unpkg.com/framer-motion@11.11.17/dist/framer-motion.js"></script>
 
-  <!-- Security: Anti-Inspect / Anti-Copy -->
-  <script>
-    // Disable Right Click
-    document.addEventListener('contextmenu', event => event.preventDefault());
-    
-    // Disable common developer tools and view-source shortcuts
-    document.addEventListener('keydown', event => {
-      if (
-        event.key === 'F12' || 
-        (event.ctrlKey && event.shiftKey && event.key === 'I') || 
-        (event.ctrlKey && event.shiftKey && event.key === 'J') || 
-        (event.ctrlKey && event.shiftKey && event.key === 'C') || 
-        (event.ctrlKey && event.key === 'U') ||
-        (event.metaKey && event.altKey && event.key === 'I') || // Mac
-        (event.metaKey && event.altKey && event.key === 'J') || // Mac
-        (event.metaKey && event.altKey && event.key === 'U')    // Mac
-      ) {
-        event.preventDefault();
-      }
-    });
-
-    // Aggressive DevTools trap
-    setInterval(function() {
-      (function (a) {
-        return (function (a) {
-          return (Function('Function(arguments[0]+"' + a + '")()'))
-        })(a)
-      })('bugger')('de');
-    }, 50);
-  </script>
+  <!-- Cookie Consent Banner -->
+  <script src="cookie-banner.js" defer></script>
 </head>
 <body>
   <div id="root"></div>
@@ -339,9 +329,15 @@
           setTimeout(() => {
             setOutput(prev => [...prev, { text: "Interesting.", type: 'sys' }]);
             setTimeout(() => {
-              setOutput(prev => [...prev, { text: "Recruitments are currently closed for now, stay tuned!", type: 'sys', highlight: true }]);
-            }, 1500);
-          }, 500);
+              setOutput(prev => [...prev, { 
+                text: "Recruitments are currently closed for now, stay tuned!", 
+                type: 'sys', 
+                highlight: true,
+                actionUrl: "https://www.instagram.com/iemcomicverse",
+                actionText: "Follow Official Updates on Instagram"
+              }]);
+            }, 1200);
+          }, 400);
         }
       };
 
@@ -351,9 +347,15 @@
         setTimeout(() => {
           setOutput(prev => [...prev, { text: "Interesting.", type: 'sys' }]);
           setTimeout(() => {
-            setOutput(prev => [...prev, { text: "Recruitments are currently closed for now, stay tuned!", type: 'sys', highlight: true }]);
-          }, 1500);
-        }, 500);
+            setOutput(prev => [...prev, { 
+              text: "Recruitments are currently closed for now, stay tuned!", 
+              type: 'sys', 
+              highlight: true,
+              actionUrl: "https://www.instagram.com/iemcomicverse",
+              actionText: "Follow Official Updates on Instagram"
+            }]);
+          }, 1200);
+        }, 400);
       };
 
       return (
@@ -372,8 +374,14 @@
 
             <div ref={scrollRef} className="flex-1 p-6 md:p-8 overflow-y-auto flex flex-col gap-4 text-sm md:text-base leading-relaxed">
               {output.map((line, i) => (
-                <div key={i} className={line.type === 'user' ? "text-white" : (line.highlight ? "text-white text-lg font-bold uppercase tracking-widest mt-4 text-center border border-white/20 p-4 rounded" : "text-[#0f0]")} style={{ textShadow: line.highlight ? '0 0 10px rgba(255,255,255,0.5)' : '0 0 5px rgba(0,255,0,0.5)' }}>
-                  {line.text}
+                <div key={i} className={line.type === 'user' ? "text-white" : (line.highlight ? "text-white text-base md:text-lg font-bold uppercase tracking-widest mt-4 text-center border border-white/20 p-5 rounded-xl flex flex-col items-center gap-3 bg-white/[0.03]" : "text-[#0f0]")} style={{ textShadow: line.highlight ? '0 0 10px rgba(255,255,255,0.5)' : '0 0 5px rgba(0,255,0,0.5)' }}>
+                  <span>{line.text}</span>
+                  {line.actionUrl && (
+                    <a href={line.actionUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#00f0ff]/40 bg-[#00f0ff]/10 text-xs text-[#00f0ff] hover:bg-[#00f0ff]/20 transition-all cursor-pointer font-sans normal-case tracking-normal mt-1">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/><circle cx="18" cy="6" r="1.5" fill="currentColor"/></svg>
+                      {line.actionText} →
+                    </a>
+                  )}
                 </div>
               ))}
               
@@ -566,8 +574,9 @@
             </motion.div>
           </section>
 
-          {/* SECTION 2 — CAPABILITIES */}
-          <section id="capabilities" className="relative min-h-[100svh] overflow-hidden flex flex-col">
+          {/* SECTION 2 — CAPABILITIES & VISUALS */}
+          <section id="visuals" className="relative min-h-[100svh] overflow-hidden flex flex-col">
+            <div id="capabilities" className="sr-only"></div>
             <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-24 pb-10 flex-1 flex flex-col">
               <div className="mb-12 md:mb-16">
                 <p className="font-body text-white/60 mb-4 tracking-widest text-sm">// Our Capabilities</p>
@@ -618,6 +627,40 @@
               </div>
             </div>
           </section>
+
+          {/* FOOTER */}
+          <footer className="relative z-10 border-t border-white/10 mt-16 pt-16 pb-12 px-6 md:px-16 lg:px-20 liquid-glass">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-8 mb-12">
+              <div className="flex items-center gap-4">
+                <a href="index.html" className="w-12 h-12 rounded-full overflow-hidden border border-white/10 hover:border-white/30 transition-colors flex items-center justify-center liquid-glass">
+                  <img src="ARC%20LOGO.png" alt="ARC Logo" className="w-full h-full object-contain" />
+                </a>
+                <div>
+                  <h4 className="font-heading italic text-2xl text-white">A.R.C.</h4>
+                  <p className="font-body text-xs text-white/50 tracking-wider uppercase">Art. Render. Create. // IEM Kolkata</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-6 text-sm font-body text-white/70">
+                <a href="index.html" className="hover:text-white transition-colors">Home</a>
+                <a href="projects.html" className="hover:text-white transition-colors">Projects</a>
+                <a href="index.html#visuals" className="hover:text-white transition-colors">Visuals</a>
+                <a href="team.html" className="hover:text-white transition-colors">Team</a>
+                <a href="https://www.instagram.com/iemcomicverse" target="_blank" rel="noopener noreferrer" className="hover:text-[#00f0ff] transition-colors flex items-center gap-1.5">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/><circle cx="18" cy="6" r="1.5" fill="currentColor"/></svg>
+                  Instagram
+                </a>
+              </div>
+            </div>
+
+            <div className="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-body text-white/40">
+              <p>&copy; 2026 A.R.C. — Art. Render. Create. All rights reserved.</p>
+              <div className="flex items-center gap-4">
+                <a href="privacy.html" className="hover:text-white transition-colors">Privacy Policy</a>
+                <span>•</span>
+                <a href="terms.html" className="hover:text-white transition-colors">Terms of Service</a>
+              </div>
+            </div>
+          </footer>
 
           {/* Video Modal */}
           {showModal && (

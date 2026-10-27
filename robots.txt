@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /events-data.json
+Disallow: /build.js
+Disallow: /package.json
+Disallow: /auto-detect.ps1
+Disallow: /Start-Auto-Detector.bat
+
+Sitemap: https://arc-landing-page.vercel.app/sitemap.xml
