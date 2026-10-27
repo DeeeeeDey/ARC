@@ -1,0 +1,118 @@
+[
+  {
+    "id": "comicverse2026",
+    "name": "Comicverse",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1612404730960-5c71577fca11?auto=format&fit=crop&q=80&w=800",
+    "desc": "Pop culture visuals, cinematic trailers, cosplay campaigns, and immersive digital branding.",
+    "igHandle": "iemcomicverse",
+    "igLink": "https://www.instagram.com/iemcomicverse"
+  },
+  {
+    "id": "iemmun2026",
+    "name": "IEMMUN",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&q=80&w=800",
+    "desc": "Formal diplomatic aesthetics, global summit branding, editorial graphics, and conference visuals.",
+    "igHandle": "iemdebatingsociety",
+    "igLink": "https://www.instagram.com/iemdebatingsociety"
+  },
+  {
+    "id": "robowars2026",
+    "name": "Robowars",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1589254065878-42c9da997008?auto=format&fit=crop&q=80&w=800",
+    "desc": "High-octane robotics team visuals, engineering documentaries, technical branding, and competitive reveals."
+  },
+  {
+    "id": "freedomcup2026",
+    "name": "Freedom Cup",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&q=80&w=800",
+    "desc": "Intense sports cinematography, team identity designs, tournament coverage, and dynamic athlete campaigns.",
+    "igHandle": "FILL_THIS_IN",
+    "igLink": "https://www.instagram.com/FILL_THIS_IN"
+  },
+  {
+    "id": "bengalesummit2026",
+    "name": "Bengal E-Summit",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&q=80&w=800",
+    "desc": "Professional corporate aesthetics, entrepreneurial highlights, summit graphics, and modern event productions.",
+    "igHandle": "bengalesummit",
+    "igLink": "https://www.instagram.com/bengalesummit/"
+  },
+  {
+    "id": "iempact2026",
+    "name": "IEMPACT",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800",
+    "desc": "High-energy promotional campaigns, event reels, social media creatives, and launch visuals.",
+    "igHandle": "iempact_2k26",
+    "igLink": "https://www.instagram.com/iempact_2k26/"
+  },
+  {
+    "id": "fedcup2026",
+    "name": "FED Cup",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
+    "desc": "Competitive identity systems, cinematic highlights, digital broadcast assets, and esports-inspired visuals."
+  },
+  {
+    "id": "iemuemmarathon2026",
+    "name": "IEM UEM Kolkata Marathon",
+    "year": "2026",
+    "img": "https://images.unsplash.com/photo-1552674605-15c2145bc818?auto=format&fit=crop&q=80&w=1200",
+    "desc": "Dynamic sports storytelling, motion visuals, athlete campaigns, and large-scale event media production."
+  },
+  {
+    "id": "iemmun2025",
+    "name": "IEMMUN",
+    "year": "2025",
+    "img": "https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?auto=format&fit=crop&q=80&w=800",
+    "desc": "Formal diplomatic aesthetics, global summit branding, editorial graphics, and conference visuals.",
+    "igHandle": "iemdebatingsociety",
+    "igLink": "https://www.instagram.com/iemdebatingsociety"
+  },
+  {
+    "id": "tedx2025",
+    "name": "TEDx IEM Salt Lake",
+    "year": "2025",
+    "img": "https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&fit=crop&q=80&w=800",
+    "desc": "Inspiring cinematic talks, premium stage visuals, thought-leadership branding, and editorial storytelling."
+  },
+  {
+    "id": "bengalesummit2025",
+    "name": "Bengal E-Summit",
+    "year": "2025",
+    "img": "https://images.unsplash.com/photo-1551818255-e6e10975bc17?auto=format&fit=crop&q=80&w=800",
+    "desc": "Professional corporate aesthetics, entrepreneurial highlights, summit graphics, and modern event productions.",
+    "igHandle": "bengalesummit",
+    "igLink": "https://www.instagram.com/bengalesummit/"
+  },
+  {
+    "id": "comicverse2025",
+    "name": "Comicverse",
+    "year": "2025",
+    "img": "https://images.unsplash.com/photo-1612404730960-5c71577fca11?auto=format&fit=crop&q=80&w=800",
+    "desc": "Pop culture visuals, cinematic trailers, cosplay campaigns, and immersive digital branding.",
+    "igHandle": "iemcomicverse",
+    "igLink": "https://www.instagram.com/iemcomicverse"
+  },
+  {
+    "id": "iempact2025",
+    "name": "IEMPACT",
+    "year": "2025",
+    "img": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800",
+    "desc": "High-energy promotional campaigns, event reels, social media creatives, and launch visuals.",
+    "igHandle": "iempact_2k26",
+    "igLink": "https://www.instagram.com/iempact_2k26/"
+  },
+  {
+    "id": "iemuemmarathon2025",
+    "name": "IEM UEM Kolkata Marathon",
+    "year": "2025",
+    "img": "https://images.unsplash.com/photo-1552674605-15c2145bc818?auto=format&fit=crop&q=80&w=1200",
+    "desc": "Dynamic sports storytelling, motion visuals, athlete campaigns, and large-scale event media production."
+  }
+]

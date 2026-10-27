@@ -1,0 +1,9 @@
+{
+  "name": "arc-landing-page",
+  "version": "1.0.0",
+  "description": "ARC Landing Page",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "npx serve -p 3000"
+  }
+}

@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A.R.C. — Art. Render. Create.</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['"Instrument Serif"', 'serif'],
+            body: ['"Barlow"', 'sans-serif'],
+          },
+          borderRadius: {
+            DEFAULT: "9999px",
+          },
+          colors: {
+            chrome: '#e8e9eb',
+            silver: '#c0c0c0',
+            electric: '#00f0ff',
+            deepPurple: '#4a00e0',
+            crimson: '#dc143c'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    .liquid-glass {
+      background: rgba(255,255,255,0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border: none;
+      box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-glass::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.45) 0%,
+        rgba(255,255,255,0.15) 20%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.15) 80%,
+        rgba(255,255,255,0.45) 100%
+      );
+
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .liquid-glass-strong {
+      background: rgba(255,255,255,0.01);
+      background-blend-mode: luminosity;
+      backdrop-filter: blur(50px);
+      -webkit-backdrop-filter: blur(50px);
+      border: none;
+      box-shadow:
+        4px 4px 4px rgba(0,0,0,0.05),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+
+      position: relative;
+      overflow: hidden;
+    }
+
+    .liquid-glass-strong::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.4px;
+
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.5) 0%,
+        rgba(255,255,255,0.2) 20%,
+        rgba(255,255,255,0) 40%,
+        rgba(255,255,255,0) 60%,
+        rgba(255,255,255,0.2) 80%,
+        rgba(255,255,255,0.5) 100%
+      );
+
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Hide scrollbar for clean cinematic look */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+
+  <!-- React & Framer Motion -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
+  <script src="https://unpkg.com/framer-motion@11.11.17/dist/framer-motion.js"></script>
+
+  <!-- Security: Anti-Inspect / Anti-Copy -->
+  <script>
+    // Disable Right Click
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    
+    // Disable common developer tools and view-source shortcuts
+    document.addEventListener('keydown', event => {
+      if (
+        event.key === 'F12' || 
+        (event.ctrlKey && event.shiftKey && event.key === 'I') || 
+        (event.ctrlKey && event.shiftKey && event.key === 'J') || 
+        (event.ctrlKey && event.shiftKey && event.key === 'C') || 
+        (event.ctrlKey && event.key === 'U') ||
+        (event.metaKey && event.altKey && event.key === 'I') || // Mac
+        (event.metaKey && event.altKey && event.key === 'J') || // Mac
+        (event.metaKey && event.altKey && event.key === 'U')    // Mac
+      ) {
+        event.preventDefault();
+      }
+    });
+
+    // Aggressive DevTools trap
+    setInterval(function() {
+      (function (a) {
+        return (function (a) {
+          return (Function('Function(arguments[0]+"' + a + '")()'))
+        })(a)
+      })('bugger')('de');
+    }, 50);
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+
+
+  <script type="text/babel" data-presets="react,env">
+    const { useState, useEffect, useRef, useMemo } = React;
+    const { motion, useAnimation, useInView } = window.Motion || window.FramerMotion || {};
+
+    // --- Dynamic Creative Background Component ---
+    const DynamicCreativeBackground = () => {
+      const [mousePos, setMousePos] = useState({ x: typeof window !== 'undefined' ? window.innerWidth / 2 : 500, y: typeof window !== 'undefined' ? window.innerHeight / 2 : 500 });
+      
+      useEffect(() => {
+        const handleMouseMove = (e) => {
+          setMousePos({ x: e.clientX, y: e.clientY });
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+      }, []);
+
+      return (
+        <div className="fixed inset-0 z-0 overflow-hidden bg-[#050505] pointer-events-none">
+          {/* Engineering Blueprint Grid */}
+          <div className="absolute inset-0 opacity-[0.07]" style={{ 
+            backgroundImage: 'radial-gradient(circle at center, transparent 0%, #050505 100%), linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', 
+            backgroundSize: '100% 100%, 40px 40px, 40px 40px', 
+            backgroundPosition: 'center, center, center' 
+          }}></div>
+
+          {/* Interactive Mouse-Tracking Orbs */}
+          <motion.div
+            animate={{ x: mousePos.x - 400, y: mousePos.y - 400 }}
+            transition={{ type: "spring", stiffness: 40, damping: 30, mass: 1 }}
+            className="absolute w-[800px] h-[800px] rounded-full opacity-60"
+            style={{ background: 'radial-gradient(circle, rgba(74,0,224,0.5) 0%, transparent 60%)', filter: 'blur(80px)' }}
+          />
+          <motion.div
+            animate={{ x: mousePos.x - 200, y: mousePos.y - 200 }}
+            transition={{ type: "spring", stiffness: 20, damping: 40, mass: 1.5 }}
+            className="absolute w-[400px] h-[400px] rounded-full opacity-40 mix-blend-screen"
+            style={{ background: 'radial-gradient(circle, rgba(0,240,255,0.4) 0%, transparent 60%)', filter: 'blur(60px)' }}
+          />
+
+          {/* Ambient Pulsing Orb */}
+          <motion.div
+            animate={{ 
+              x: typeof window !== 'undefined' ? window.innerWidth/2 - 500 : 0, 
+              y: typeof window !== 'undefined' ? window.innerHeight/2 - 500 : 0,
+              scale: [1, 1.1, 1],
+              opacity: [0.2, 0.3, 0.2]
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute w-[1000px] h-[1000px] rounded-full"
+            style={{ background: 'radial-gradient(circle, rgba(220,20,60,0.3) 0%, transparent 60%)', filter: 'blur(100px)' }}
+          />
+
+          {/* Cinematic Film Grain */}
+          <div className="absolute inset-0 opacity-[0.12] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }}></div>
+        </div>
+      );
+    };
+
+    // --- BlurText Component ---
+    const BlurText = ({ text, className }) => {
+      const ref = useRef(null);
+      const inView = useInView(ref, { once: true, amount: 0.1 });
+      const words = text.split(" ");
+      
+      return (
+        <h1 ref={ref} className={className} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {words.map((word, i) => (
+            <motion.span
+              key={i}
+              initial={{ filter: 'blur(10px)', opacity: 0, y: 50 }}
+              animate={inView ? { filter: ['blur(10px)', 'blur(5px)', 'blur(0px)'], opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: (i * 100) / 1000, ease: "easeOut" }}
+              style={{ display: 'inline-block', marginRight: '0.28em' }}
+            >
+              {word}
+            </motion.span>
+          ))}
+        </h1>
+      );
+    };
+
+    // --- ARC Terminal Quiz Component ---
+    const ARC_QUESTIONS = [
+      { q: "Which font would win in a street fight?", options: ["Helvetica", "Comic Sans", "Times New Roman", "Wingdings (summons demons)"] },
+      { q: "How many layers deep are you emotionally?", options: ["3", "17", "248 unnamed layers", "background copy final FINAL.psd"] },
+      { q: "A client says: “Make it pop.” What do you do?", options: ["increase saturation", "add glow", "cry", "disappear forever"] },
+      { q: "Which object has the strongest artistic aura?", options: ["traffic cone", "CRT monitor", "spoon", "chair facing the wrong direction"] },
+      { q: "Your render has been loading for 9 hours. You:", options: ["stay hopeful", "pray to GPU gods", "stare at progress bar intensely", "question reality itself"] },
+      { q: "Which color feels the most illegal?", options: ["neon green", "#FF00FF", "beige", "transparent"] },
+      { q: "Pick your greatest weakness:", options: ["alignment", "deadlines", "naming files properly", "“I’ll fix it later”"] },
+      { q: "What is the correct number of coffee cups required for creativity?", options: ["1", "3", "7", "blood type: caffeine"] },
+      { q: "Which sound best represents design pain?", options: ["windows error sound", "fan spinning at 9000 RPM", "pen tool clicking", "“can you make the logo bigger?”"] },
+      { q: "Your artistic process mostly consists of:", options: ["vision", "experimentation", "random nonsense until it works", "accidental masterpieces"] },
+      { q: "Choose your natural habitat:", options: ["dark room with RGB lights", "messy desk", "notebook full of impossible ideas", "browser with 97 tabs open"] },
+      { q: "Which file name are you most likely to create?", options: ["final.png", "final_final.png", "final_v2_LAST_REAL.psd", "asdfghj.png"] },
+      { q: "You accidentally delete your project before submission. First reaction?", options: ["calm acceptance", "silent screaming", "“maybe this is destiny”", "restart career"] },
+      { q: "Which creative sin have you committed?", options: ["stretching logos", "using too many transitions", "centering with spaces", "downloading from Pinterest and saying “inspired”"] },
+      { q: "How do you know a design is finished?", options: ["when it looks balanced", "when deadline arrives", "when laptop battery dies", "it is never finished"] },
+      { q: "Pick an ARC specialization:", options: ["cinematic nonsense", "controlled chaos", "sleep deprivation aesthetics", "making circles look expensive"] },
+      { q: "What powers your creativity?", options: ["music", "existential dread", "midnight motivation", "impossible deadlines"] },
+      { q: "Rate your ability to “just quickly edit something.”", options: ["beginner", "intermediate", "advanced liar", "impossible task"] },
+      { q: "Which creative tool do you trust the least?", options: ["blender physics", "photoshop warp", "premiere autosave", "printer"] },
+      { q: "An empty canvas feels like:", options: ["opportunity", "fear", "judgment", "enemy territory"] }
+    ];
+
+    const TerminalQuiz = ({ onClose }) => {
+      const [stage, setStage] = useState('init');
+      const [questions, setQuestions] = useState([]);
+      const [currentIndex, setCurrentIndex] = useState(0);
+      const [output, setOutput] = useState([]);
+      const scrollRef = useRef(null);
+
+      useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        const shuffled = [...ARC_QUESTIONS].sort(() => 0.5 - Math.random());
+        setQuestions(shuffled.slice(0, 5));
+        
+        const bootSequence = [
+          "ARC_OS v1.0.4 loaded.",
+          "Establishing secure connection...",
+          "Connection established.",
+          "Running ARC_Recruit.exe...",
+          "Analyzing candidate profile..."
+        ];
+        
+        let delay = 0;
+        bootSequence.forEach((line, i) => {
+          setTimeout(() => {
+            setOutput(prev => [...prev, { text: line, type: 'sys' }]);
+            if (i === bootSequence.length - 1) {
+              setTimeout(() => setStage('question'), 1000);
+            }
+          }, delay);
+          delay += 600;
+        });
+
+        return () => { document.body.style.overflow = ''; };
+      }, []);
+
+      useEffect(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }, [output, stage, currentIndex]);
+
+      const handleOptionSelect = (optionLabel) => {
+        setOutput(prev => [...prev, { text: `> ${optionLabel}`, type: 'user' }]);
+        
+        if (stage === 'question') {
+          if (currentIndex < 4) {
+            setCurrentIndex(prev => prev + 1);
+          } else {
+            setStage('final');
+          }
+        } else if (stage === 'final') {
+          setStage('ending');
+          setTimeout(() => {
+            setOutput(prev => [...prev, { text: "Interesting.", type: 'sys' }]);
+            setTimeout(() => {
+              setOutput(prev => [...prev, { text: "Recruitments are currently closed for now, stay tuned!", type: 'sys', highlight: true }]);
+            }, 1500);
+          }, 500);
+        }
+      };
+
+      const skipToEnd = () => {
+        setStage('ending');
+        setOutput([{ text: "> Process aborted. Jumping to conclusion.", type: 'sys' }]);
+        setTimeout(() => {
+          setOutput(prev => [...prev, { text: "Interesting.", type: 'sys' }]);
+          setTimeout(() => {
+            setOutput(prev => [...prev, { text: "Recruitments are currently closed for now, stay tuned!", type: 'sys', highlight: true }]);
+          }, 1500);
+        }, 500);
+      };
+
+      return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 font-mono text-[#0f0]">
+          <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, transparent 20%, #000 120%)' }} />
+          <div className="absolute inset-0 pointer-events-none opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, #0f0 2px, #0f0 4px)', backgroundSize: '100% 4px' }} />
+          
+          <div className="relative w-full max-w-4xl h-[80vh] border border-[#0f0]/50 bg-black/80 shadow-[0_0_30px_rgba(0,255,0,0.15)] rounded-lg overflow-hidden flex flex-col">
+            <div className="bg-[#0f0]/20 border-b border-[#0f0]/50 text-[#0f0] px-4 py-2 flex justify-between items-center text-sm tracking-widest uppercase">
+              <span>ARC_RECRUIT_TERMINAL // v.2026</span>
+              <div className="flex gap-6">
+                {stage !== 'ending' && <button onClick={skipToEnd} className="hover:text-white transition-colors uppercase tracking-widest text-xs">Skip</button>}
+                <button onClick={onClose} className="hover:text-white transition-colors text-lg font-sans leading-none">&times;</button>
+              </div>
+            </div>
+
+            <div ref={scrollRef} className="flex-1 p-6 md:p-8 overflow-y-auto flex flex-col gap-4 text-sm md:text-base leading-relaxed">
+              {output.map((line, i) => (
+                <div key={i} className={line.type === 'user' ? "text-white" : (line.highlight ? "text-white text-lg font-bold uppercase tracking-widest mt-4 text-center border border-white/20 p-4 rounded" : "text-[#0f0]")} style={{ textShadow: line.highlight ? '0 0 10px rgba(255,255,255,0.5)' : '0 0 5px rgba(0,255,0,0.5)' }}>
+                  {line.text}
+                </div>
+              ))}
+              
+              {stage === 'question' && questions.length > 0 && (
+                <div className="mt-4 opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]" style={{ textShadow: '0 0 5px rgba(0,255,0,0.5)' }}>
+                  <div className="mb-4 opacity-80">> QUESTION {currentIndex + 1}/5: <span className="text-white ml-2">{questions[currentIndex].q}</span></div>
+                  <div className="flex flex-col gap-2 pl-4">
+                    {questions[currentIndex].options.map((opt, i) => (
+                      <button key={i} onClick={() => handleOptionSelect(opt)} className="text-left hover:text-white hover:bg-[#0f0]/20 px-3 py-1.5 transition-colors w-full sm:w-max border border-transparent hover:border-[#0f0]/30 rounded">
+                        [{i+1}] {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {stage === 'final' && (
+                <div className="mt-6 opacity-0 animate-[fadeIn_0.5s_ease-out_forwards]" style={{ textShadow: '0 0 5px rgba(255,50,50,0.5)' }}>
+                  <div className="mb-4 text-red-400 font-bold tracking-widest uppercase">> FINAL ASSESSMENT: <span className="text-white ml-2">Do you think you are worthy of ARC?</span></div>
+                  <div className="flex flex-col gap-2 pl-4 text-white/80">
+                    {["yes", "no", "define worthy", "I clicked accidentally"].map((opt, i) => (
+                      <button key={i} onClick={() => handleOptionSelect(opt)} className="text-left hover:text-red-400 hover:bg-red-500/10 px-3 py-1.5 transition-colors w-full sm:w-max border border-transparent hover:border-red-500/30 rounded">
+                        [{i+1}] {opt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {stage !== 'ending' && <div className="animate-[pulse_1s_ease-in-out_infinite] w-2 h-4 md:h-5 bg-[#0f0] inline-block mt-4 shadow-[0_0_10px_rgba(0,255,0,0.8)]"></div>}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- Navbar ---
+
+    const Navbar = ({ onJoinArc }) => {
+      const [isOpen, setIsOpen] = useState(false);
+
+      return (
+        <nav className="fixed top-4 left-0 w-full px-6 md:px-16 z-50 flex items-center justify-between pointer-events-none">
+          {/* Left Logo (Replace src with your own logo file, e.g., 'logo.png') */}
+          <a href="index.html" className="liquid-glass w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center pointer-events-auto relative z-50 overflow-hidden group border border-white/10 hover:border-white/30 transition-colors">
+            <img 
+              src="ARC%20LOGO.png" 
+              alt="ARC Logo" 
+              className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+            />
+          </a>
+          
+          {/* Center Links (Desktop) */}
+          <div className="hidden md:flex liquid-glass rounded-full px-2 py-1 pointer-events-auto absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <a href="index.html" className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">Home</a>
+            <a href="projects.html" className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">Projects</a>
+            <a href="index.html#visuals" className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">Visuals</a>
+            <a href="team.html" className="px-3 py-2 text-sm font-medium text-white/90 font-body hover:text-white transition-colors">Team</a>
+          </div>
+
+          {/* Right Spacer & CTA & Mobile Toggle */}
+          <div className="flex items-center gap-3 md:gap-4 pointer-events-auto relative z-50">
+            {/* Mobile Menu Button */}
+            <button 
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden liquid-glass w-10 h-10 rounded-full flex flex-col items-center justify-center gap-[4px] pointer-events-auto"
+            >
+              <motion.span animate={isOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }} className="w-[14px] h-[1.5px] bg-white rounded-full block"></motion.span>
+              <motion.span animate={isOpen ? { opacity: 0 } : { opacity: 1 }} className="w-[14px] h-[1.5px] bg-white rounded-full block"></motion.span>
+              <motion.span animate={isOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }} className="w-[14px] h-[1.5px] bg-white rounded-full block"></motion.span>
+            </button>
+
+            <button onClick={onJoinArc} className="bg-white text-black px-3 py-1.5 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-body font-medium flex items-center gap-1 hover:bg-gray-200 transition-colors">
+              Join A.R.C.
+              <svg width="14" height="14" className="md:w-4 md:h-4 hidden sm:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7 17L17 7M17 7H7M17 7V17" />
+              </svg>
+            </button>
+            <div className="w-10 h-10 md:w-12 md:h-12 hidden md:block opacity-0"></div>
+          </div>
+
+          {/* Mobile Dropdown Menu */}
+          <motion.div 
+            initial={false}
+            animate={isOpen ? { opacity: 1, y: 0, pointerEvents: 'auto' } : { opacity: 0, y: -10, pointerEvents: 'none' }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-16 left-6 right-6 liquid-glass-strong rounded-2xl p-2 flex flex-col md:hidden pointer-events-auto shadow-2xl origin-top"
+          >
+            <a href="index.html" onClick={() => setIsOpen(false)} className="px-4 py-3 text-sm font-medium text-white/90 font-body hover:bg-white/10 rounded-xl transition-colors">Home</a>
+            <a href="projects.html" onClick={() => setIsOpen(false)} className="px-4 py-3 text-sm font-medium text-white/90 font-body hover:bg-white/10 rounded-xl transition-colors">Projects</a>
+            <a href="index.html#visuals" onClick={() => setIsOpen(false)} className="px-4 py-3 text-sm font-medium text-white/90 font-body hover:bg-white/10 rounded-xl transition-colors">Visuals</a>
+            <a href="team.html" onClick={() => setIsOpen(false)} className="px-4 py-3 text-sm font-medium text-white/90 font-body hover:bg-white/10 rounded-xl transition-colors">Team</a>
+          </motion.div>
+        </nav>
+      );
+    };
+
+    // --- App ---
+    const App = () => {
+      const [showModal, setShowModal] = useState(false);
+      const [showTerminal, setShowTerminal] = useState(false);
+
+      return (
+        <div className="min-h-[100svh] text-white selection:bg-white/30">
+          {showTerminal && <TerminalQuiz onClose={() => setShowTerminal(false)} />}
+          
+          {/* GLOBAL BACKGROUND */}
+          <DynamicCreativeBackground />
+
+          <Navbar onJoinArc={() => setShowTerminal(true)} />
+          
+          {/* SECTION 1 — HERO */}
+          <section className="relative min-h-[100svh] flex flex-col justify-center items-center overflow-hidden pt-28 pb-10 md:pt-0 md:pb-0">
+            <div className="relative z-10 flex flex-col items-center text-center px-4 w-full flex-1 justify-center">
+              <BlurText 
+                text="Crafting Visual Worlds Beyond Imagination" 
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-heading italic text-white leading-[1] md:leading-[0.8] max-w-4xl tracking-tight md:tracking-[-4px]"
+              />
+
+              <motion.p 
+                initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
+                animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+                className="mt-4 md:mt-6 text-sm md:text-base text-white/80 max-w-2xl font-body font-light leading-relaxed px-2"
+              >
+                A.R.C. is the official creative media and visual production club of IEM - crafting cinematic visuals, motion graphics, branding systems, films, and digital experiences that shape campus culture.
+              </motion.p>
+
+              <motion.div 
+                initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
+                animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.1, ease: "easeOut" }}
+                className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 mt-8 md:mt-10 w-full sm:w-auto px-4"
+              >
+                <a href="projects.html" className="liquid-glass-strong px-8 py-3.5 rounded-full text-white font-body font-medium hover:bg-white/10 transition-colors w-full sm:w-auto text-sm text-center block sm:inline-block">
+                  Explore Our Work
+                </a>
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center justify-center gap-2 text-white font-body font-medium hover:text-white/80 transition-colors w-full sm:w-auto py-2 text-sm"
+                >
+                  <span className="w-8 h-8 rounded-full border border-white/30 flex items-center justify-center pl-0.5">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+                  </span>
+                  Watch Showreel
+                </button>
+              </motion.div>
+
+              <motion.div 
+                initial={{ filter: 'blur(10px)', opacity: 0, y: 20 }}
+                animate={{ filter: 'blur(0px)', opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.3, ease: "easeOut" }}
+                className="grid grid-cols-2 gap-3 sm:flex sm:flex-row justify-center sm:gap-6 mt-12 md:mt-16 w-full max-w-2xl px-2"
+              >
+                <div className="liquid-glass px-4 py-5 md:px-8 md:py-6 rounded-[1rem] md:rounded-[1.25rem] text-center w-full flex flex-col justify-center">
+                  <h3 className="font-heading italic text-3xl md:text-4xl tracking-[-1px] mb-1 md:mb-2">150+</h3>
+                  <p className="font-body text-[10px] md:text-xs text-white/70 uppercase tracking-widest leading-tight">Event Visual<br className="hidden md:block"/> Campaigns</p>
+                </div>
+                <div className="liquid-glass px-4 py-5 md:px-8 md:py-6 rounded-[1rem] md:rounded-[1.25rem] text-center w-full flex flex-col justify-center">
+                  <h3 className="font-heading italic text-3xl md:text-4xl tracking-[-1px] mb-1 md:mb-2">5M+</h3>
+                  <p className="font-body text-[10px] md:text-xs text-white/70 uppercase tracking-widest leading-tight">Total Social<br className="hidden md:block"/> Reach</p>
+                </div>
+              </motion.div>
+            </div>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 1.4 }}
+              className="w-full z-10 mt-12 md:mt-auto md:absolute md:bottom-8"
+            >
+              <p className="text-xs font-body text-white/50 uppercase tracking-widest mb-4 text-center">Creative force behind campus-defining experiences</p>
+              
+              <div className="w-full overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+                <motion.div 
+                  className="flex gap-4 w-max"
+                  animate={{ x: ["0%", "-50%"] }}
+                  transition={{ repeat: Infinity, ease: "linear", duration: 45 }}
+                >
+                  {[
+                    'Comicverse', 'IEMMUN', 'Robowars', 'Freedom Cup', 'Bengal E-Summit', 'IEMPACT', 'IEM UEM Kolkata Marathon', 'TEDx IEM Salt Lake', 'FED Cup', 'Team Rudra',
+                    'Comicverse', 'IEMMUN', 'Robowars', 'Freedom Cup', 'Bengal E-Summit', 'IEMPACT', 'IEM UEM Kolkata Marathon', 'TEDx IEM Salt Lake', 'FED Cup', 'Team Rudra'
+                  ].map((event, i) => (
+                    <span key={i} className="liquid-glass px-5 py-2 rounded-full font-heading italic text-xl md:text-2xl text-white/80 tracking-tight shrink-0 pointer-events-none">
+                      {event}
+                    </span>
+                  ))}
+                </motion.div>
+              </div>
+            </motion.div>
+          </section>
+
+          {/* SECTION 2 — CAPABILITIES */}
+          <section id="capabilities" className="relative min-h-[100svh] overflow-hidden flex flex-col">
+            <div className="relative z-10 px-6 md:px-16 lg:px-20 pt-24 pb-10 flex-1 flex flex-col">
+              <div className="mb-12 md:mb-16">
+                <p className="font-body text-white/60 mb-4 tracking-widest text-sm">// Our Capabilities</p>
+                <h2 className="font-heading italic text-white text-5xl md:text-7xl lg:text-[6rem] leading-[0.9] tracking-tight md:tracking-[-3px] max-w-xl">
+                  Creative<br/>production<br/>evolved
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-auto">
+                {/* Card 1 */}
+                <div className="liquid-glass rounded-[1.25rem] p-6 min-h-[360px] flex flex-col group hover:bg-white/[0.03] transition-colors duration-500 cursor-default">
+                  <div className="flex flex-wrap gap-2 mb-auto">
+                    {['Dynamic Visuals', 'Motion Design', 'Cinematic FX', 'Brand Identity'].map(tag => (
+                      <span key={tag} className="text-[10px] font-body uppercase tracking-wider border border-white/20 rounded-full px-3 py-1 bg-black/20 group-hover:border-white/40 transition-colors">{tag}</span>
+                    ))}
+                  </div>
+                  <div className="mt-8">
+                    <h3 className="font-heading italic text-4xl mb-4 group-hover:text-electric transition-colors">Motion Graphics</h3>
+                    <p className="font-body text-white/70 text-sm leading-relaxed group-hover:text-white/90 transition-colors">From event trailers to animated visual systems, we create high-energy motion content that transforms promotions into cinematic experiences.</p>
+                  </div>
+                </div>
+
+                {/* Card 2 */}
+                <div className="liquid-glass rounded-[1.25rem] p-6 min-h-[360px] flex flex-col group hover:bg-white/[0.03] transition-colors duration-500 cursor-default">
+                  <div className="flex flex-wrap gap-2 mb-auto">
+                    {['Aftermovies', 'Reels & Shorts', 'Live Coverage', 'Storytelling'].map(tag => (
+                      <span key={tag} className="text-[10px] font-body uppercase tracking-wider border border-white/20 rounded-full px-3 py-1 bg-black/20 group-hover:border-white/40 transition-colors">{tag}</span>
+                    ))}
+                  </div>
+                  <div className="mt-8">
+                    <h3 className="font-heading italic text-4xl mb-4 group-hover:text-crimson transition-colors">Event Production</h3>
+                    <p className="font-body text-white/70 text-sm leading-relaxed group-hover:text-white/90 transition-colors">Our team captures and edits immersive event experiences through professional cinematography, editing pipelines, and fast-paced social content.</p>
+                  </div>
+                </div>
+
+                {/* Card 3 */}
+                <div className="liquid-glass rounded-[1.25rem] p-6 min-h-[360px] flex flex-col group hover:bg-white/[0.03] transition-colors duration-500 cursor-default">
+                  <div className="flex flex-wrap gap-2 mb-auto">
+                    {['Posters', 'Social Campaigns', 'Visual Systems', 'Creative Direction'].map(tag => (
+                      <span key={tag} className="text-[10px] font-body uppercase tracking-wider border border-white/20 rounded-full px-3 py-1 bg-black/20 group-hover:border-white/40 transition-colors">{tag}</span>
+                    ))}
+                  </div>
+                  <div className="mt-8">
+                    <h3 className="font-heading italic text-4xl mb-4 group-hover:text-electric transition-colors">Design & Branding</h3>
+                    <p className="font-body text-white/70 text-sm leading-relaxed group-hover:text-white/90 transition-colors">We build bold visual identities for college events through posters, digital campaigns, typography systems, and creative art direction.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Video Modal */}
+          {showModal && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-xl p-4">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="relative w-full max-w-5xl aspect-video rounded-2xl md:rounded-[2rem] overflow-hidden liquid-glass border border-white/20 shadow-2xl shadow-black/50"
+              >
+                {/* Close Button */}
+                <button 
+                  onClick={() => setShowModal(false)}
+                  className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-pointer pointer-events-auto"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+                {/* Video Player */}
+                <video 
+                  src="showreel.mp4" 
+                  autoPlay 
+                  controls 
+                  controlsList="nodownload"
+                  className="w-full h-full object-cover"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              </motion.div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
